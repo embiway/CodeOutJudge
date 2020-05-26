@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    {% if error_message %}
+        <h6>{{ error_message }}</h6>
+    {% endif %}
+
+    {% if next %}
+        <h6>You can't display the text</h6>
+    {% endif %}
+
+    <form method="POST" action="{% url 'Problems:login' %}">
+    {% csrf_token %}
+        <label for="username">UserName : </label>
+        <input type="text" name = "username"><br />
+        <label for="password">PassWord</label>
+        <input type="password" name="password"><br />
+
+        <input type="submit">
+    </form>
+
+    <button><a href="{% url 'Problems:sign_up_request' %}">Sign Up</a></button>
+    </body>
+</html>
