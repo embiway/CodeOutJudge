@@ -7,6 +7,14 @@ from .models import Problem
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
+import requests
+import json
+
+url = "https://api.judge0.com/submissions/?base64_encoded=false&wait=false"
+base_url = "https://api.judge0.com/submissions/"
+additional_stuff = "?base64_encoded=false&wait=false"
+fields = "&fields=stdout,stderr,status,time,memory"
+
 # Create your views here.
 
 def index(request):
@@ -100,4 +108,42 @@ def run_code(request , problem_id):
     code = problem.submission_set.last()
     file_content = open(code.submission.path , 'r')
     code_content = file_content.read()
-    return HttpResponse(code_content)
+    
+    sample_input = problem.inputfile_set.last()
+    sample_output = sample_input.output_file
+
+    file = open(sample_input.file_content.path , 'r')
+    input_text = file.read()
+    file.close()
+    
+
+    file = open(sample_output.file_content.path , 'r')
+    output_text = file.read()
+    file.close()
+
+    data = {
+        "source_code" : code_content,
+        "language_id" : 52,
+        "stdin" : input_text
+    }
+    response = requests.post(url , data)
+    response_json = response.json()
+    # return HttpResponse(response.status_code)
+    # return HttpResponse(base_url + response_json["token"] + additional_stuff + fields)
+    if response.status_code == 201:
+        verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
+        verdict_response = verdict.json()
+        if verdict.status_code == 200:
+            while verdict_response["status"]["description"] == "Processing":
+                verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
+                verdict_response = verdict.json()
+            code.time = verdict_response["time"]
+            code.memory = verdict_response["memory"]
+            code.status = verdict_response["status"]
+
+            code.save()
+            return HttpResponse(verdict.content)
+        else:
+            return HttpResponse("sorry the code couldn't be processed")
+    else:
+        raise Http404('Oops !!! Something went wrong')
