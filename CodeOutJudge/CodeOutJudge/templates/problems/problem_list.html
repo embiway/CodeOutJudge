@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Problems</title>
+</head>
+<body>
+    {% for problem in problems %}
+        <p>{{ problem.problem_name }} : 
+        {% if problem in attempted_problems %}
+            Attempted
+        {% endif %}
+        {% if problem not in attempted_problems %}
+            Not Attempted
+        {% endif %}
+        </p>
+    {% endfor %}
+</body>
+</html>

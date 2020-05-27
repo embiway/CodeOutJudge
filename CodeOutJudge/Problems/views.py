@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.models import User
 from .models import Profile
 from django.http import HttpResponse
+from .models import Problem
 
 # Create your views here.
 
@@ -23,7 +24,7 @@ def log_in(request):
     user = authenticate(request , username = username , password = password)
     if user is not None:
         login(request , user)
-        return render(request , 'profiles/index.html')
+        return redirect('/')
     
     else:
         return render(request , 'profiles/login.html' , {
@@ -55,3 +56,14 @@ def additional_info(request):
     return render(request , 'profiles/index.html' , {
             'user' : request.user,
         })
+
+def log_out(request):
+    logout(request)
+    return redirect('/')
+
+def list_problems(request):
+    problems = Problem.objects.all()
+    profile = Profile.objects.get(user = request.user)
+    attempted_problems = profile.problem_set.all()
+    context = {'problems' : problems , 'attempted_problems' : attempted_problems}
+    return render(request , 'problems/problem_list.html' , context)
