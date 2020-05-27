@@ -103,47 +103,51 @@ def view_problem(request , problem_id):
 
 
 def run_code(request , problem_id):
-    problem = Problem.objects.get(id = problem_id)
-    problem.submission_set.create(submission = request.FILES.get('code'))
-    code = problem.submission_set.last()
-    file_content = open(code.submission.path , 'r')
-    code_content = file_content.read()
-    
-    sample_input = problem.inputfile_set.last()
-    sample_output = sample_input.output_file
+    if request.method == 'POST' and request.FILES.get('code'):
+        profile = Profile.objects.get(user = request.user)
+        problem = Problem.objects.get(id = problem_id)
+        problem.submission_set.create(submission = request.FILES.get('code'))
+        code = problem.submission_set.last()
+        file_content = open(code.submission.path , 'r')
+        code_content = file_content.read()
+        
+        sample_input = problem.inputfile_set.last()
+        sample_output = sample_input.output_file
 
-    file = open(sample_input.file_content.path , 'r')
-    input_text = file.read()
-    file.close()
-    
+        file = open(sample_input.file_content.path , 'r')
+        input_text = file.read()
+        file.close()
+        
 
-    file = open(sample_output.file_content.path , 'r')
-    output_text = file.read()
-    file.close()
+        file = open(sample_output.file_content.path , 'r')
+        output_text = file.read()
+        file.close()
 
-    data = {
-        "source_code" : code_content,
-        "language_id" : 52,
-        "stdin" : input_text
-    }
-    response = requests.post(url , data)
-    response_json = response.json()
-    # return HttpResponse(response.status_code)
-    # return HttpResponse(base_url + response_json["token"] + additional_stuff + fields)
-    if response.status_code == 201:
-        verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
-        verdict_response = verdict.json()
-        if verdict.status_code == 200:
-            while verdict_response["status"]["description"] == "Processing":
-                verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
-                verdict_response = verdict.json()
-            code.time = verdict_response["time"]
-            code.memory = verdict_response["memory"]
-            code.status = verdict_response["status"]
-
-            code.save()
-            return HttpResponse(verdict.content)
+        data = {
+            "source_code" : code_content,
+            "language_id" : 52,
+            "stdin" : input_text
+        }
+        response = requests.post(url , data)
+        response_json = response.json()
+        # return HttpResponse(response.status_code)
+        # return HttpResponse(base_url + response_json["token"] + additional_stuff + fields)
+        if response.status_code == 201:
+            verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
+            verdict_response = verdict.json()
+            if verdict.status_code == 200:
+                while verdict_response["status"]["description"] == "Processing":
+                    verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
+                    verdict_response = verdict.json()
+                code.time = verdict_response["time"]
+                code.memory = verdict_response["memory"]
+                code.status = verdict_response["status"]
+                code.profile = profile
+                code.save()
+                return HttpResponse(verdict.content)
+            else:
+                return HttpResponse("sorry the code couldn't be processed")
         else:
-            return HttpResponse("sorry the code couldn't be processed")
+            raise Http404('Oops !!! Something went wrong')
     else:
-        raise Http404('Oops !!! Something went wrong')
+        return redirect('/problems/' + str(problem_id))

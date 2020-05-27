@@ -34,10 +34,11 @@ class InputFile(models.Model):
 
 class Submission(models.Model):
     submission = models.FileField(upload_to="submissions")
-    time = models.TextField(max_length=20 , default = "0.0000000")
-    memory = models.IntegerField(default = 0)
-    status = models.TextField(max_length = 100 , default = "Unchecked")
+    time = models.TextField(max_length=20 , default = "0.0000000" , null = True)
+    memory = models.IntegerField(null=True , default=0)
+    status = models.TextField(max_length = 100 , default = "Unchecked" , null=True)
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE , default = None)
+    user = models.ForeignKey(Profile , on_delete=models.CASCADE , null=True)
     def __str__(self):
         return str(self.id)
 
