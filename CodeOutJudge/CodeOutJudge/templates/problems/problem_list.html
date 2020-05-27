@@ -8,7 +8,7 @@
 </head>
 <body>
     {% for problem in problems %}
-        <p>{{ problem.problem_name }} : 
+        <p><a href="{% url 'Problems:view_problem' problem.id%}">{{ problem.problem_name }}</a> : 
         {% if problem in attempted_problems %}
             Attempted
         {% endif %}

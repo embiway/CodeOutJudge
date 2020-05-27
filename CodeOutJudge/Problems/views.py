@@ -1,9 +1,11 @@
 from django.shortcuts import render , redirect
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.models import User
-from .models import Profile
-from django.http import HttpResponse
+from .models import Profile , Submission
+from django.http import HttpResponse , Http404
 from .models import Problem
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -67,3 +69,35 @@ def list_problems(request):
     attempted_problems = profile.problem_set.all()
     context = {'problems' : problems , 'attempted_problems' : attempted_problems}
     return render(request , 'problems/problem_list.html' , context)
+
+
+def view_problem(request , problem_id):
+    try:
+        problem = Problem.objects.get(id = problem_id)
+        sample_input = problem.inputfile_set.first()
+        sample_output = sample_input.output_file
+
+        file = open(sample_input.file_content.path , 'r')
+        sample_input_text = file.read()
+        file.close()
+        
+
+        file = open(sample_output.file_content.path , 'r')
+        sample_output_text = file.read()
+        file.close()
+
+        context = { 'problem' : problem ,
+                    'sample_input' : sample_input_text , 
+                    'sample_output' : sample_output_text }
+        return render(request , 'problems/view_problem.html' , context)
+    except:
+        raise Http404('Problem Not Found')
+
+
+def run_code(request , problem_id):
+    problem = Problem.objects.get(id = problem_id)
+    problem.submission_set.create(submission = request.FILES.get('code'))
+    code = problem.submission_set.last()
+    file_content = open(code.submission.path , 'r')
+    code_content = file_content.read()
+    return HttpResponse(code_content)

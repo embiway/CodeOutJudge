@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div class="problem_name">
+        <h3>{{ problem.problem_name }}</h3>
+    </div>
+    <div class="problem_statement">
+        <p>{{ problem.problem_statement }}</p>
+    </div>
+
+    <div class="sample_input">
+        <p>Sample Input : {{ sample_input }}</p>
+    </div>
+
+    <div class="sample_output">
+        <p>Sample Output : {{ sample_output }}</p>
+    </div>
+
+    <form method="POST" action="{% url 'Problems:run_code'  problem.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+        <label for="code">
+            <input type="file" accept="text/html" name="code">
+        </label>
+        <input type="submit">
+    </form>
+</body>
+</html>

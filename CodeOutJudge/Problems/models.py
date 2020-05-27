@@ -33,7 +33,7 @@ class InputFile(models.Model):
         return str(self.id)
 
 class Submission(models.Model):
-    submission = models.FileField()
+    submission = models.FileField(upload_to="submissions")
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE , default = None)
     def __str__(self):
         return str(self.id)
