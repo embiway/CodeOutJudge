@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'problems/view_problem.css' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>CodeOut</title>
 </head>
 <body>
     <div class="problem_name">
@@ -12,6 +14,14 @@
     </div>
     <div class="problem_statement">
         <p>{{ problem.problem_statement }}</p>
+    </div>
+
+    <div class="input_info">
+        <p>Input : {{ input_info }}</p>
+    </div>
+
+    <div class="output_info">
+        <p>Output : {{ output_info }}</p>
     </div>
 
     <div class="sample_input">
@@ -22,12 +32,21 @@
         <p>Sample Output : {{ sample_output }}</p>
     </div>
 
+
+    <div class="time_limit">
+        <p>Time Limit : {{ time_limit }}</p>
+    </div>
+
+    <div class="memory_limit">
+        <p>Memory Limit : {{ memory_limit }}</p>
+    </div>
+
     <form method="POST" action="{% url 'Problems:run_code'  problem.id %}" enctype="multipart/form-data">
     {% csrf_token %}
         <label for="code">
             <input type="file" accept="text/html" name="code">
         </label>
-        <input type="submit">
+        <input type="submit" value="Run">
     </form>
 </body>
 </html>

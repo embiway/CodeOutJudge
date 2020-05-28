@@ -15,6 +15,12 @@ class Profile(models.Model):
 class Problem(models.Model):    
     problem_name = models.TextField(max_length=50 , default="NONE")
     problem_statement = models.TextField(max_length = 10000, blank = False)
+    input_info = models.TextField(max_length = 10000 , null = True)
+    output_info = models.TextField(max_length = 10000 , null = True)
+    constraints = models.TextField(max_length = 10000 , null = True)
+
+    time_limit = models.FloatField(default = 1.0000)
+    memory_limit = models.IntegerField(default = 256000)
     user = models.ManyToManyField(Profile)
     def __str__(self):
         return self.problem_name

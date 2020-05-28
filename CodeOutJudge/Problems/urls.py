@@ -11,5 +11,5 @@ urlpatterns = [
     path('logout/' , views.log_out ,  name = 'logout'),
     path('problems/' , views.list_problems , name = "problems"),
     path('problems/<int:problem_id>/' , views.view_problem , name = 'view_problem'),
-    path('<int:problem_id>/run/' , views.run_code , name = "run_code")
+    path('<int:problem_id>/run/' , views.run_code , name = "run_code"),
 ]

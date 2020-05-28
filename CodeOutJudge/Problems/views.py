@@ -106,8 +106,8 @@ def run_code(request , problem_id):
     if request.method == 'POST' and request.FILES.get('code'):
         profile = Profile.objects.get(user = request.user)
         problem = Problem.objects.get(id = problem_id)
-        problem.submission_set.create(submission = request.FILES.get('code'))
-        code = problem.submission_set.last()
+        code = Submission(submission = request.FILES.get('code') , problem = problem , user = profile)
+        code.save()
         file_content = open(code.submission.path , 'r')
         code_content = file_content.read()
         
@@ -141,10 +141,13 @@ def run_code(request , problem_id):
                     verdict_response = verdict.json()
                 code.time = verdict_response["time"]
                 code.memory = verdict_response["memory"]
-                code.status = verdict_response["status"]
-                code.profile = profile
+                code.status = verdict_response["status"]["description"]
                 code.save()
-                return HttpResponse(verdict.content)
+
+                codes = Submission.objects.filter(user = profile , problem = problem)
+                return render(request , 'problems/Result.html' , {
+                    'codes' : codes,
+                })
             else:
                 return HttpResponse("sorry the code couldn't be processed")
         else:

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CodeOut</title>
+</head>
+<body>
+    <table>
+        <th>
+            <td>User</td>
+            <td>Status</td>
+            <td>Time</td>
+            <td>Memory</td>
+        </th>
+        {% for code in codes %}
+        <tr>
+            <td>{{ code.user.user.username }}</td>
+            <td>{{ code.status }}</td>
+            <td>{{ code.time }}</td>
+            <td>{{ code.memory }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
