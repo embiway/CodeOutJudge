@@ -1,26 +1,28 @@
 from django.shortcuts import render , redirect
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.models import User
-from .models import Profile , Submission
+from .models import Profile , Submission , Problem
 from django.http import HttpResponse , Http404
-from .models import Problem
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.db import IntegrityError
 
 import requests
 import json
 
+#public api key used : Judge0 Api
 url = "https://api.judge0.com/submissions/?base64_encoded=false&wait=false"
 base_url = "https://api.judge0.com/submissions/"
 additional_stuff = "?base64_encoded=false&wait=false"
 fields = "&fields=stdout,stderr,status,time,memory"
 
-# Create your views here.
-
+#The home page which the user sees 
 def index(request):
     if request.user.is_authenticated:
+        profile = Profile.objects.get(user = request.user)
+        problem_count = profile.problem_set.count()
         return render(request , 'profiles/index.html' , {
-            'user' : request.user,
+            'profile' : profile, 'problem_count' : problem_count,
         })
     
     else:
@@ -45,14 +47,18 @@ def sign_up_request(request):
     return render(request , 'profiles/sign_up.html')
 
 def sign_up(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+    try:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-    user = User.objects.create_user(username = username , password = password)
-    login(request , user)
+        user = User.objects.create_user(username = username , password = password)
+        login(request , user)
 
-    # return HttpResponse('Hello')
-    return render(request , 'profiles/additional_info.html')
+        return render(request , 'profiles/additional_info.html')
+    except IntegrityError:
+        return render(request , 'profiles/sign_up.html' , {
+            'error_message' : 'username already taken',
+        })
 
 def additional_info(request):
     user = request.user
@@ -75,6 +81,8 @@ def list_problems(request):
     problems = Problem.objects.all()
     profile = Profile.objects.get(user = request.user)
     attempted_problems = profile.problem_set.all()
+
+    #attempted problems : problems for which the user has some submission
     context = {'problems' : problems , 'attempted_problems' : attempted_problems}
     return render(request , 'problems/problem_list.html' , context)
 
@@ -123,6 +131,7 @@ def run_code(request , problem_id):
         output_text = file.read()
         file.close()
 
+        #data for the api , language id 52 refers to C++. Currently only C++ can be used.
         data = {
             "source_code" : code_content,
             "language_id" : 52,
@@ -130,12 +139,15 @@ def run_code(request , problem_id):
         }
         response = requests.post(url , data)
         response_json = response.json()
-        # return HttpResponse(response.status_code)
-        # return HttpResponse(base_url + response_json["token"] + additional_stuff + fields)
+        
+        #Two requests are made : First one (with success code 201) is for running the code
+        # Second one is to get the result 
         if response.status_code == 201:
             verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
             verdict_response = verdict.json()
+
             if verdict.status_code == 200:
+                
                 while verdict_response["status"]["description"] == "Processing":
                     verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
                     verdict_response = verdict.json()

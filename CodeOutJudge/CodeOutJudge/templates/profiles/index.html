@@ -133,10 +133,16 @@
         </div>
         <div id="profile-display">
             <div class="card" style="width: 18rem;">
-                <img src="..." class="card-img-top" alt="...">
+                {% if profile.profile_pic %}
+                <img src="{{ profile.profile_pic.url }}" class="card-img-top circular--landscape" style="margin: 2.5rem;" alt="...">
+                {% endif %}
+
+                {% if not profile.profile_pic %}
+                <img src="/media/profile_pics/default.jpeg" class="card-img-top circular--landscape" style="margin: 2.5rem;" alt="image can't be loaded">
+                {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    <h5 class="card-title">{{ profile.user.username }}</h5>
+                    <p class="card-text">Problems solved : {{ problem_count }}</p>
                     <a href="#" class="btn btn-primary">Go somewhere</a>
                 </div>
             </div>
