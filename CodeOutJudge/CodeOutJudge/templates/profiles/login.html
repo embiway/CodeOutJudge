@@ -1,30 +1,54 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'profiles/login.css' %}">
     <title>CodeOut</title>
-</head>
-<body>
-    {% if error_message %}
-        <h6>{{ error_message }}</h6>
-    {% endif %}
+  </head>
+  <body>
+    <div class="outer">
+        <div class="middle">
+            <div class="inner">
+                <form method="POST" action="{% url 'Problems:login' %}">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">UserName : </label>
+                        <input type="text" name = "username" class="form-control"><br />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">PassWord</label>
+                        <input type="password" name="password" class="form-control"><br />
+                    </div>
+                    {% if error_message %}
+                        <p id="error_message">*{{ error_message }}</p>
+                    {% endif %}
 
-    {% if next %}
-        <h6>You can't display the text</h6>
-    {% endif %}
+                    {% if next %}
+                        <h6>You can't display the text</h6>
+                    {% endif %}
+                    <span id="submit">
+                        <button type="submit" class="btn btn-primary">Login</button><br />
+                    </span>
+                </form>
 
-    <form method="POST" action="{% url 'Problems:login' %}">
-    {% csrf_token %}
-        <label for="username">UserName : </label>
-        <input type="text" name = "username"><br />
-        <label for="password">PassWord</label>
-        <input type="password" name="password"><br />
+                <a href="{% url 'Problems:sign_up_request' %}">Sign Up</a>
 
-        <input type="submit">
-    </form>
+            </div>
+        </div>
+    </div>
 
-    <button><a href="{% url 'Problems:sign_up_request' %}">Sign Up</a></button>
-    </body>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  </body>
 </html>

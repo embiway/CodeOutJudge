@@ -1,0 +1,33 @@
+.outer {
+    display: table;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+display: table-cell;
+vertical-align: middle;
+}
+
+.inner {
+border: solid;
+margin-left: auto;
+margin-right: auto;
+padding: 5%;
+width: 400px;
+/*whatever width you want*/
+}
+
+#error_message{
+    color: red;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: small;
+}
+
+#submit{
+    padding-bottom: 1px;
+}
+

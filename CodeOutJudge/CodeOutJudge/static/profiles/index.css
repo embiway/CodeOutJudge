@@ -1,0 +1,25 @@
+#main { 
+    width: 100%;
+    margin-top: 30px;
+    margin-left : 2.5%;
+}
+#main-div    {
+    width: 70%;
+    float: left;
+    margin-left: 7px;
+}
+
+#profile-display  {
+    position: absolute;
+    width: 23%;
+    margin-left: 73%;
+}
+
+@media only screen and (max-width: 900px){
+    #profile-display{
+        display: none;
+    }
+    #main-div{
+        width: 100%;
+    }
+}
