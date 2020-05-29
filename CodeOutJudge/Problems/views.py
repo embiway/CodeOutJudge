@@ -1,7 +1,7 @@
 from django.shortcuts import render , redirect
 from django.contrib.auth import authenticate , login , logout
 from django.contrib.auth.models import User
-from .models import Profile , Submission , Problem
+from .models import Profile , Submission , Problem , Blogs
 from django.http import HttpResponse , Http404
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
@@ -19,10 +19,13 @@ fields = "&fields=stdout,stderr,status,time,memory"
 #The home page which the user sees 
 def index(request):
     if request.user.is_authenticated:
+        blogs = Blogs.objects.all()
         profile = Profile.objects.get(user = request.user)
         problem_count = profile.problem_set.count()
         return render(request , 'profiles/index.html' , {
-            'profile' : profile, 'problem_count' : problem_count,
+            'profile' : profile, 
+            'problem_count' : problem_count,
+            'blogs' : blogs,
         })
     
     else:
@@ -76,6 +79,18 @@ def additional_info(request):
 def log_out(request):
     logout(request)
     return redirect('/')
+
+def like_incrementer(request , blog_id):
+    blog = Blogs.objects.get(id = blog_id)
+    try:
+        profile = Profile.objects.get(user = request.user)
+        user = blog.likes.get(profile)
+        return redirect('/')
+    except:
+        blog.likes.add(profile)
+        blog.like_count = blog.likes.count()
+        blog.save()
+        return redirect('/')
 
 def list_problems(request):
     problems = Problem.objects.all()
@@ -155,6 +170,9 @@ def run_code(request , problem_id):
                 code.memory = verdict_response["memory"]
                 code.status = verdict_response["status"]["description"]
                 code.save()
+
+                if code.status == "Accepted":
+                    profile.problem_set.add(problem)
 
                 codes = Submission.objects.filter(user = profile , problem = problem)
                 return render(request , 'problems/Result.html' , {

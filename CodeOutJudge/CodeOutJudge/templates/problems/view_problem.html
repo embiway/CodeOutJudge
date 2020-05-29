@@ -1,14 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    
     {% load static %}
     <link rel="stylesheet" href="{% static 'problems/view_problem.css' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CodeOut</title>
-</head>
-<body>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'Problems:index' %}"
+            ><img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT7dd0u49G6FuV_-tBcJu6vVQE4YR_6j998-aqHaJFDe2am0rah&usqp=CAU"
+            width="30"
+            height="30"
+            class="d-inline-block align-top"
+            alt=""
+            loading="lazy"
+            />CodeOut</a
+        >
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'Problems:problems' %}"
+                >Problems<span class="sr-only">(current)</span></a
+                >
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >
+                Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a
+                class="nav-link disabled"
+                href="#"
+                tabindex="-1"
+                aria-disabled="true"
+                >Disabled</a
+                >
+            </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+            <input
+                class="form-control mr-sm-2"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+            />
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                Search
+            </button>
+            </form>
+            <button class="btn btn-outline-success my-2 my-sm-0"><a href="{% url 'Problems:logout' %}">Log Out</a></button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="centre-div">
+            <div class="problem_name">
+                <h3>{{ problem.problem_name }}</h3>
+            </div>
+            <div class="problem_statement">
+                <p>{{ problem.problem_statement }}</p>
+            </div>
+        
+            <div class="info">
+                <p>Input : {{ input_info }}</p>
+            </div>
+        
+            <div class="info">
+                <p>Output : {{ output_info }}</p>
+            </div>
+        
+            <div class="sample_input">
+                <p>Sample Input : {{ sample_input }}</p>
+            </div>
+        
+            <div class="sample_output">
+                <p>Sample Output : {{ sample_output }}</p>
+            </div>
+        
+        
+            <div class="time_limit">
+                <p>Time Limit : {{ time_limit }}</p>
+            </div>
+        
+            <div class="memory_limit">
+                <p>Memory Limit : {{ memory_limit }}</p>
+            </div>
+        
+            <form method="POST" action="{% url 'Problems:run_code'  problem.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+                <label for="code">
+                    <input type="file" accept="text/html" name="code">
+                </label>
+                <input type="submit" value="Run" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+<!-- <body>
     <div class="problem_name">
         <h3>{{ problem.problem_name }}</h3>
     </div>
@@ -49,4 +182,4 @@
         <input type="submit" value="Run">
     </form>
 </body>
-</html>
+</html> -->

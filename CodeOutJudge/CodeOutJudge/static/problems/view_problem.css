@@ -1,3 +1,25 @@
-.problem_name{
-    color : red;
+.container{
+    text-align: center;
 }
+.centre-div{
+    background-color: red;
+    margin-left: 10%;
+    margin-right: 10%;
+    border: solid;
+    padding: 5px;
+}
+.problem-name{
+    border: solid;
+    font-family: cursive;
+    background: coral;
+    color: chartreuse;
+}
+
+.problem_statement{
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.info{
+    border: dotted;
+}
+

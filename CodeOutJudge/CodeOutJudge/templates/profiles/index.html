@@ -100,36 +100,18 @@
 
     <div id="main">
         <div id="main-div">
+          {% for blog in blogs %}          
             <div class="card">
                 <div class="card-header">
-                    Featured
+                    {{ blog.title }}
                 </div>
                 <div class="card-body">
-                    <h5 class="card-title">Special title treatment</h5>
-                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <h5 class="card-title">{{ blog.profile.user.username }}</h5>
+                    <p class="card-text">{{ blog.content }}</p>
+                    <a href="{% url 'Problems:like_incrementer' blog.id %}"><img src="/media/utilities/like.png" alt="img" width="50px" height="50px"></a>  {{ blog.like_count }}
                 </div>
             </div>
-            <div class="card">
-                    <div class="card-header">
-                        Featured
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Special title treatment</h5>
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                    </div>
-                </div>
-                <div class="card">
-                        <div class="card-header">
-                            Featured
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Special title treatment</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
+          {% endfor %}
         </div>
         <div id="profile-display">
             <div class="card" style="width: 18rem;">

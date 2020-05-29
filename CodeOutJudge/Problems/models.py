@@ -48,5 +48,17 @@ class Submission(models.Model):
     user = models.ForeignKey(Profile , on_delete=models.CASCADE , null=True)
     def __str__(self):
         return str(self.id)
+    
 
+class Blogs(models.Model):
+    user = models.ForeignKey(Profile , on_delete = models.CASCADE , related_name = "creator")
+    created_time = models.DateTimeField()
+    title = models.TextField(max_length = 100)
+    content = models.TextField(max_length = 2081)
+    likes = models.ManyToManyField(Profile , related_name = "likers")
+    like_count = models.IntegerField(default = 0)
 
+class Comments(models.Model):
+    user = models.ForeignKey(Profile , on_delete = models.CASCADE)
+    blog = models.ForeignKey(Blogs , on_delete = models.CASCADE)
+    created_time = models.DateTimeField()
