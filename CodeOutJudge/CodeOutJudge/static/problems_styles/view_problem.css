@@ -2,9 +2,9 @@
     text-align: center;
 }
 .centre-div{
-    background-color: red;
-    margin-left: 10%;
-    margin-right: 10%;
+    /* background-color: red; */
+    margin-left: 5%;
+    margin-right: 5%;
     border: solid;
     padding: 5px;
 }

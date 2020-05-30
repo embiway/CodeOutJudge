@@ -33,7 +33,7 @@ class OutputFile(models.Model):
         return str(self.id)
 
 class InputFile(models.Model):
-    file_content = models.FileField()
+    file_content = models.FileField(null = True)
     output_file = models.OneToOneField(OutputFile , on_delete=models.CASCADE)
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE , default = None)
     def __str__(self):
