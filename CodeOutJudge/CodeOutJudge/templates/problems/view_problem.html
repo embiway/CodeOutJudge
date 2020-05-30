@@ -75,16 +75,18 @@
                 >
             </li>
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-            <input
-                class="form-control mr-sm-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-            />
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-                Search
-            </button>
+            <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'Profiles:find_profile' %}">
+                {% csrf_token %}
+                <input
+                    class="form-control mr-sm-2"
+                    type="search"
+                    placeholder="Search any user"
+                    aria-label="Search"
+                    name="search"
+                />
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                    Search
+                </button>
             </form>
             <button class="btn btn-outline-success my-2 my-sm-0"><a href="{% url 'Problems:logout' %}">Log Out</a></button>
         </div>
@@ -93,42 +95,46 @@
     <div class="container">
         <div class="centre-div">
             <div class="problem_name">
-                <h3>{{ problem.problem_name }}</h3>
+                <h1>{{ problem.problem_name }}</h1>
             </div>
             <div class="problem_statement">
                 <p>{{ problem.problem_statement }}</p>
             </div>
         
             <div class="info">
-                <p>Input : {{ input_info }}</p>
+                <p><h5>Input</h5> {{ problem.input_info }}</p>
             </div>
         
             <div class="info">
-                <p>Output : {{ output_info }}</p>
+                <p><h5>Output</h5> {{ problem.output_info }}</p>
             </div>
         
             <div class="sample_input">
-                <p>Sample Input : {{ sample_input }}</p>
+                <p><h5>Sample Input</h5> {{ sample_input }}</p>
             </div>
         
             <div class="sample_output">
-                <p>Sample Output : {{ sample_output }}</p>
+                <p><h5>Sample Output</h5> {{ sample_output }}</p>
             </div>
         
         
-            <div class="time_limit">
-                <p>Time Limit : {{ time_limit }}</p>
+            <small><div class="limits">
+                <p>Time Limit : {{ problem.time_limit }}</p>
+                <p>Memory Limit : {{ problem.memory_limit }}</p>
             </div>
-        
-            <div class="memory_limit">
-                <p>Memory Limit : {{ memory_limit }}</p>
-            </div>
+            </small>
         
             <form method="POST" action="{% url 'Problems:run_code'  problem.id %}" enctype="multipart/form-data">
             {% csrf_token %}
                 <label for="code">
                     <input type="file" accept="text/html" name="code">
                 </label>
+
+                <select name="language_selection">
+                    {% for language in languages %}
+                        <option value="{{ language }}">{{ language }}</option>
+                    {% endfor %}
+                </select>
                 <input type="submit" value="Run" class="btn btn-primary">
             </form>
         </div>

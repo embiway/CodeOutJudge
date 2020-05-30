@@ -31,6 +31,8 @@
         <thead>
             <tr>
             <th scope="col">User</th>
+            <th scope="col">Created Time</th>
+            <th scope="col">Language</th>
             <th scope="col">Status</th>
             <th scope="col">Time</th>
             <th scope="col">Memory</th>
@@ -40,7 +42,18 @@
             {% for code in codes %}
                 <tr>
                     <td>{{ code.user.user.username }}</td>
-                    <td>{{ code.status }}</td>
+                    <td>{{ code.creation_time }}</td>
+                    <td>{{ code.language_used }}</td>
+                    {% if code.status == "Accepted" %}
+                        <td style="color: green;"><strong>{{ code.status }}</strong></td>
+                    {% endif %}
+                    {% if code.status == "Wrong Answer" %}
+                        <td style="color: red;"><strong>{{ code.status }}</strong></td>
+                    {% endif %}
+                    {% if code.status != "Accepted" and code.status != "Wrong Answer" %}
+                        <td style="color: orange;"><strong>{{ code.status }}</strong></td>
+                    {% endif %}
+                    
                     <td>{{ code.time }}</td>
                     <td>{{ code.memory }}</td>
                 </tr>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 
@@ -45,6 +46,8 @@ class Submission(models.Model):
     memory = models.IntegerField(null=True , default=0)
     status = models.TextField(max_length = 100 , default = "Unchecked" , null=True)
     problem = models.ForeignKey(Problem , on_delete=models.CASCADE , default = None)
+    language_used = models.TextField(max_length = 20 , default = "C++ (GCC 9.2.0)")
+    creation_time = models.DateTimeField(default = timezone.now)
     user = models.ForeignKey(Profile , on_delete=models.CASCADE , null=True)
     def __str__(self):
         return str(self.id)

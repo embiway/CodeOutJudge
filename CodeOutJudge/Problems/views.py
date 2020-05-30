@@ -6,6 +6,7 @@ from django.http import HttpResponse , Http404
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError
+from .languages import language_dict , languages
 
 import requests
 import json
@@ -119,7 +120,8 @@ def view_problem(request , problem_id):
 
         context = { 'problem' : problem ,
                     'sample_input' : sample_input_text , 
-                    'sample_output' : sample_output_text }
+                    'sample_output' : sample_output_text,
+                    'languages' : languages, }
         return render(request , 'problems/view_problem.html' , context)
     except:
         raise Http404('Problem Not Found')
@@ -127,6 +129,7 @@ def view_problem(request , problem_id):
 
 def run_code(request , problem_id):
     if request.method == 'POST' and request.FILES.get('code'):
+        language_id = request.POST.get('language_selection')
         profile = Profile.objects.get(user = request.user)
         problem = Problem.objects.get(id = problem_id)
         code = Submission(submission = request.FILES.get('code') , problem = problem , user = profile)
@@ -146,35 +149,36 @@ def run_code(request , problem_id):
         output_text = file.read()
         file.close()
 
-        #data for the api , language id 52 refers to C++. Currently only C++ can be used.
+        #data for the api , refer to language.py for languages and their ids
         data = {
             "source_code" : code_content,
-            "language_id" : 52,
+            "language_id" : language_dict[language_id],
             "stdin" : input_text
         }
         response = requests.post(url , data)
         response_json = response.json()
         
-        #Two requests are made : First one (with success code 201) is for running the code
-        # Second one is to get the result 
+        # Two requests are made : First one (with success code 201) is for running the code
+        # Second one is to get the result
         if response.status_code == 201:
             verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
             verdict_response = verdict.json()
 
             if verdict.status_code == 200:
                 
-                while verdict_response["status"]["description"] == "Processing":
+                while verdict_response["status"]["description"] == "Processing" or verdict_response["status"]["description"] == "In Queue":
                     verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
                     verdict_response = verdict.json()
                 code.time = verdict_response["time"]
                 code.memory = verdict_response["memory"]
                 code.status = verdict_response["status"]["description"]
+                code.language_used = language_id
                 code.save()
 
                 if code.status == "Accepted":
                     profile.problem_set.add(problem)
 
-                codes = Submission.objects.filter(user = profile , problem = problem)
+                codes = Submission.objects.filter(user = profile , problem = problem).order_by('-creation_time')
                 return render(request , 'problems/Result.html' , {
                     'codes' : codes,
                 })

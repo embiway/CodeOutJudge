@@ -1,25 +1,47 @@
 .container{
     text-align: center;
+    margin-bottom: 5%;
+
 }
 .centre-div{
     /* background-color: red; */
     margin-left: 5%;
     margin-right: 5%;
-    border: solid;
+
     padding: 5px;
 }
-.problem-name{
-    border: solid;
+.problem_name{
+
     font-family: cursive;
     background: coral;
     color: chartreuse;
+    padding: 5%;
+    margin: 5%;
 }
 
 .problem_statement{
+
     font-family: 'Courier New', Courier, monospace;
 }
 
-.info{
-    border: dotted;
+.sample_input{
+    width: 50%;
+    float: left;
+    border: solid;
 }
 
+.sample_output{
+    border: solid;
+}
+
+.limits{
+
+    margin: 5%;
+    text-align: left;
+}
+
+.info{
+    margin-left: 5%;
+    margin-right: 5%;
+    text-align: left;
+}

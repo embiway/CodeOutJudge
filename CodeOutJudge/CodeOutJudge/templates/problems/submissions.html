@@ -23,45 +23,50 @@
         <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'Profiles:find_profile' %}">
             {% csrf_token %}
             <input
-                class="form-control mr-sm-2"
-                type="search"
-                placeholder="Search any user"
-                aria-label="Search"
-                name="search"
+              class="form-control mr-sm-2"
+              type="search"
+              placeholder="Search any user"
+              aria-label="Search"
+              name="search"
             />
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-                Search
+              Search
             </button>
         </form>
         <a href="{% url 'Problems:logout' %}" class="btn btn-outline-success my-2 my-sm-0">Log Out</a>
     </nav>
-    <!-- <div class="card" style="width: 100%; margin-top: 25px">
-        <ul class="list-group list-group-flush"></ul>
-        {% for problem in problems %}
-            <li class="list-group-item"><a href="{% url 'Problems:view_problem' problem.id %}">{{ problem.problem_name }}</a></li>
-        {% endfor %}
-        </ul>
-    </div> -->
 
     <table class="table table-hover">
         <thead>
             <tr>
-            <th scope="col" style="width: 75%;">Problem Name</th>
+            <th scope="col">User</th>
+            <th scope="col">Problem</th>
+            <th scope="col">Created Time</th>
+            <th scope="col">Language</th>
             <th scope="col">Status</th>
+            <th scope="col">Time</th>
+            <th scope="col">Memory</th>
             </tr>
         </thead>
         <tbody>
-            {% for problem in problems %}
+            {% for code in codes %}
                 <tr>
-                    <td><a href="{% url 'Problems:view_problem' problem.id %}">{{ problem.problem_name }}</a></td>
-                    <td>
-                        {% if problem in attempted_problems %}
-                            Attempted
-                        {% endif %}
-                        {% if problem not in attempted_problems %}
-                            Not Attempted
-                        {% endif %}
-                    </td>
+                    <td>{{ code.user.user.username }}</td>
+                    <td>{{ code.problem }}</td>
+                    <td>{{ code.creation_time }}</td>
+                    <td>{{ code.language_used }}</td>
+                    {% if code.status == "Accepted" %}
+                        <td style="color: green;"><strong>{{ code.status }}</strong></td>
+                    {% endif %}
+                    {% if code.status == "Wrong Answer" %}
+                        <td style="color: red;"><strong>{{ code.status }}</strong></td>
+                    {% endif %}
+                    {% if code.status != "Accepted" and code.status != "Wrong Answer" %}
+                        <td style="color: orange;"><strong>{{ code.status }}</strong></td>
+                    {% endif %}
+                    
+                    <td>{{ code.time }}</td>
+                    <td>{{ code.memory }}</td>
                 </tr>
             {% endfor %}
         </tbody>

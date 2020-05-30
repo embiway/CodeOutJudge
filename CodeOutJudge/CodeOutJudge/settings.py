@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Problems.apps.ProblemsConfig',
     'CodeOutJudge',
+    'Profiles.apps.ProfilesConfig',
 ]
 
 MIDDLEWARE = [

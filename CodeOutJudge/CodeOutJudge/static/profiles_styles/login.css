@@ -33,6 +33,6 @@ width: 400px;
 
 @media only screen and (max_width: 900px){
     .inner{
-        width: 100%;
+        width: 80%;
     }
 }
