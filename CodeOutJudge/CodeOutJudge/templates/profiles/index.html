@@ -47,34 +47,10 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'Profiles:blog_form' %}">Create Blog</a>
           </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
           <li class="nav-item">
-            <a
-              class="nav-link disabled"
-              href="#"
-              tabindex="-1"
-              aria-disabled="true"
-              >Disabled</a
-            >
+            <a class="nav-link" href="/admin">Admin Area</a>
           </li>
+         
         </ul>
         <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'Profiles:find_profile' %}">
           {% csrf_token %}
@@ -104,7 +80,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ blog.profile.user.username }}</h5>
                     <p class="card-text">{{ blog.content }}</p>
-                    <a href="{% url 'Problems:like_incrementer' blog.id %}"><img src="/media/utilities/like.png" alt="img" width="50px" height="50px"></a>  {{ blog.like_count }}
+                    <a href="{% url 'Problems:like_incrementer' blog.id 'index' %}"><img src="/media/utilities/like.png" alt="img" width="50px" height="50px"></a>  {{ blog.like_count }}
                 </div>
             </div>
           {% endfor %}

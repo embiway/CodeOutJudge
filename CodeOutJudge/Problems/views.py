@@ -81,17 +81,23 @@ def log_out(request):
     logout(request)
     return redirect('/')
 
-def like_incrementer(request , blog_id):
+def like_incrementer(request , blog_id , blog_location):
     blog = Blogs.objects.get(id = blog_id)
     try:
         profile = Profile.objects.get(user = request.user)
         user = blog.likes.get(profile)
-        return redirect('/')
+        if blog_location == "index":
+            return redirect('/')
+        else:
+            return redirect('/profiles/' + str(blog_id) + '/display_blog')
     except:
         blog.likes.add(profile)
         blog.like_count = blog.likes.count()
         blog.save()
-        return redirect('/')
+        if blog_location == "index":
+            return redirect('/')
+        else:
+            return redirect('/profiles/' + str(blog_id) + '/display_blog')
 
 def list_problems(request):
     problems = Problem.objects.all()
