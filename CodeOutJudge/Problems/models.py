@@ -61,7 +61,14 @@ class Blogs(models.Model):
     likes = models.ManyToManyField(Profile , related_name = "likers")
     like_count = models.IntegerField(default = 0)
 
+    def __str__(self):
+        return self.user.user.username
+
 class Comments(models.Model):
     user = models.ForeignKey(Profile , on_delete = models.CASCADE)
     blog = models.ForeignKey(Blogs , on_delete = models.CASCADE)
     created_time = models.DateTimeField()
+    content = models.TextField(max_length = 100 , default = "...")
+
+    def __str__(self):
+        return self.user.user.username

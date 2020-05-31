@@ -94,22 +94,22 @@
         <div class="carousel-item active">
           <img src="/media/utilities/profile_carousel1.jpeg" class="d-block w-100" alt="..." width="100%" height="400px">
           <div class="carousel-caption d-none d-md-block">
-            <h5>First slide label</h5>
-            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            <a href="{% url 'Profiles:submissions' profile.id %}" class="btn btn-info" style="margin: 3%;">Submissions</a>
+            <p>Browse the submissions of the {{ profile.user.username }}</p>
           </div>
         </div>
         <div class="carousel-item">
           <img src="/media/utilities/profile_carousel2.jpeg" class="d-block w-100" alt="..." width="100%" height="400px">
           <div class="carousel-caption d-none d-md-block">
-            <h5>Second slide label</h5>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <a href="{% url 'Profiles:user_problem' profile.id %}" class="btn btn-info" style="margin: 3%;">Problems</a>
+            <p>Browse the problems solved by {{ profile.user.username }}</p>
           </div>
         </div>
         <div class="carousel-item">
           <img src="/media/utilities/profile_carousel3.jpeg" class="d-block w-100" alt="..." width="100%" height="400px">
           <div class="carousel-caption d-none d-md-block">
-            <h5>Third slide label</h5>
-            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+            <a href="{% url 'Profiles:blog_list' profile.id %}" class="btn btn-info" style="margin: 3%;">Blogs</a>
+            <p>Visit the blogs created by {{ profile.user.username }}</p>
           </div>
         </div>
       </div>
@@ -121,6 +121,38 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
+    </div>
+
+    <div class="container" style="margin: 5%;">
+        <div class="row">
+          <div class="col">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title"><h2>{{ profile.user.username }}</h2>
+                  <h6 class="card-subtitle mb-2 text-muted">{{ profile.bio }}</h6>
+                  <p class="card-text">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Place : {{ profile.location }}</li>
+                        <li class="list-group-item">Birth-date : {{ profile.birth_date }}</li>
+                        <li class="list-group-item">Problems solved : <span class="badge badge-primary">{{ problem_count }}</span></li>
+                      </ul>
+                  </p>
+                  <a href="#" class="card-link">Card link</a>
+                  <a href="#" class="card-link">Another link</a>
+                </div>
+            </div>
+          </div>
+          <div class="col-md-auto">
+            <div class="card" style="border: none;">
+              {% if profile.profile_pic %}
+                <img src="{{ profile.profile_pic.url }}" style="width: 250px; height: 250px; border-radius:50%;">
+              {% endif %}
+              {% if not profile.profile_pic %}
+                <img src="/media/profile_pics/default.jpeg" style="width: 250px; height: 250px; border-radius:50%;">
+              {% endif %}
+            </div>
+          </div>
+        </div>
     </div>
 
     <!-- Optional JavaScript -->

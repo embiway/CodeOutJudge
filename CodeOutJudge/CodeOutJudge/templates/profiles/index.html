@@ -45,7 +45,7 @@
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="{% url 'Profiles:blog_form' %}">Create Blog</a>
           </li>
           <li class="nav-item dropdown">
             <a
@@ -89,16 +89,17 @@
             Search
           </button>
         </form>
-        <button class="btn btn-outline-success my-2 my-sm-0"><a href="{% url 'Problems:logout' %}">Log Out</a></button>
+        <a href="{% url 'Problems:logout' %}" class="btn btn-outline-success my-2 my-sm-0">Log Out</a>
       </div>
     </nav>
 
-    <div id="main">
-        <div id="main-div">
+    <div class="container my-4">
+      <div class="row mb-2">
+        <div class="col-lg">
           {% for blog in blogs %}          
             <div class="card">
-                <div class="card-header">
-                    {{ blog.title }}
+                <div class="card-header" style="padding: 0%;">
+                    <a href="{% url 'Profiles:blog_display' blog.id %}" class="list-group-item list-group-item-action"  style="background:rgb(220,220,220)">{{ blog.title }}</a>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title">{{ blog.profile.user.username }}</h5>
@@ -108,7 +109,7 @@
             </div>
           {% endfor %}
         </div>
-        <div id="profile-display">
+        <div class="col-md-3">
             <div class="card" style="width: 18rem;">
                 {% if profile.profile_pic %}
                 <img src="{{ profile.profile_pic.url }}" class="card-img-top circular--landscape" style="margin: 2.5rem;" alt="...">
@@ -124,7 +125,10 @@
                 </div>
             </div>
         </div>
+      </div>
     </div>
+
+    <footer class="float-right badge" style="margin: 3%;"><a href="">Back to top</a></footer>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script

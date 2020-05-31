@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Problem , Profile , Submission , InputFile , OutputFile , Blogs
+from .models import Problem , Profile , Submission , InputFile , OutputFile , Blogs , Comments
 
 # Register your models here.
 
@@ -9,3 +9,4 @@ admin.site.register(Submission)
 admin.site.register(InputFile)
 admin.site.register(OutputFile)
 admin.site.register(Blogs)
+admin.site.register(Comments)
