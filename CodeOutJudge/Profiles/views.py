@@ -49,7 +49,7 @@ def submissions_display(request , profile_id):
 
 def user_blogs_list(request , profile_id):
     profile = Profile.objects.get(id = profile_id)
-    blogs = profile.creator.all()
+    blogs = profile.creator.all().order_by('-created_time')
 
     return render(request , 'profiles/blog_list.html' , {
         'blogs' : blogs,
@@ -58,7 +58,7 @@ def user_blogs_list(request , profile_id):
 def display_blog(request , blog_id):
     try:
         blog = Blogs.objects.get(id = blog_id)
-        comments = blog.comments_set.all()
+        comments = blog.comments_set.all().order_by('-created_time')
         comment = CommentForm()
 
         return render(request , 'profiles/blog_display.html' , {

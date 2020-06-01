@@ -8,14 +8,14 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     {% load static %}
-    <link rel="stylesheet" href="{% static 'profiles/login.css' %}">
+    <link rel="stylesheet" href="{% static 'profiles_styles/login.css' %}">
     <title>CodeOut</title>
   </head>
   <body>
     <div class="outer">
         <div class="middle">
             <div class="inner">
-                <form method="POST" action="{% url 'Problems:additional_info' %}">
+                <form method="POST" action="{% url 'Problems:additional_info' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="bio">bio : </label>
@@ -28,6 +28,11 @@
                     <div class="form-group">
                         <label for="location">Location : </label>
                         <input type="text" name="location" class="form-control"><br />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image_url">Profile Pic</label>
+                        <input type="file" name="image_url" class="form-control"><br />
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </form>

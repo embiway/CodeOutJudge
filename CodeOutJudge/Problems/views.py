@@ -20,7 +20,7 @@ fields = "&fields=stdout,stderr,status,time,memory"
 #The home page which the user sees 
 def index(request):
     if request.user.is_authenticated:
-        blogs = Blogs.objects.all()
+        blogs = Blogs.objects.all().order_by('-created_time')
         profile = Profile.objects.get(user = request.user)
         problem_count = profile.problem_set.count()
         return render(request , 'profiles/index.html' , {
@@ -69,12 +69,16 @@ def additional_info(request):
     bio = request.POST.get('bio')
     birth_date = request.POST.get('birth_date')
     location = request.POST.get('location')
+    image = request.FILES.get('image_url')
+    blogs = Blogs.objects.all().order_by('-created_time')
 
-    profile = Profile(user = user , bio = bio , birth_date = birth_date , location = location)
+    profile = Profile(user = user , bio = bio , birth_date = birth_date , location = location , profile_pic = image)
     profile.save()
 
     return render(request , 'profiles/index.html' , {
-            'user' : request.user,
+            'profile' : profile,
+            'blogs' : blogs,
+            'problem_count' : '0',
         })
 
 def log_out(request):
