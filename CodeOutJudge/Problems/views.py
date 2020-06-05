@@ -166,15 +166,15 @@ def run_code(request , problem_id):
             "stdin" : input_text
         }
         response = requests.post(url , data)
-        response_json = response.json()
         
         # Two requests are made : First one (with success code 201) is for running the code
         # Second one is to get the result
         if response.status_code == 201:
+            response_json = response.json()
             verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
-            verdict_response = verdict.json()
 
             if verdict.status_code == 200:
+                verdict_response = verdict.json()
                 
                 while verdict_response["status"]["description"] == "Processing" or verdict_response["status"]["description"] == "In Queue":
                     verdict = requests.get(base_url + response_json["token"] + additional_stuff + fields)
