@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'Problems.apps.ProblemsConfig',
     'CodeOutJudge',
     'Profiles.apps.ProfilesConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -70,8 +71,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'CodeOutJudge.wsgi.application'
-
+# WSGI_APPLICATION = 'CodeOutJudge.wsgi.application'
+ASGI_APPLICATION = "CodeOutJudge.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
