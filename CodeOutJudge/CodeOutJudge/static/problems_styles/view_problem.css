@@ -45,3 +45,8 @@
     margin-right: 5%;
     text-align: left;
 }
+
+#submission-result {
+    margin: 40%;
+    position: relative;
+}

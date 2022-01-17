@@ -111,10 +111,18 @@
       const problem_id = {{ problem.id }};
       compileAndRun = (submission) => {
         const codeFile = document.getElementById('code-file').files;
+        
         if(codeFile[0] === undefined) {
           console.log('Kindly enter a file');
           return;
         }
+
+        if(codeFile[0].type != 'text/x-c++src') {
+          document.getElementById('submission-result').innerHTML = 'Submit a valid C++ file';
+          return;
+        }
+
+        document.getElementById('submission-result').innerHTML = 'RUNNING CODE!!!!!!!!!!!';
 
         console.log(typeof(codeFile));
 
@@ -148,7 +156,7 @@
           console.log("HERE");
           document.getElementById('submission-result').innerHTML = data;
         })
-        .catch((err) => { console.log("HELLO"); console.log(err) });
+        .catch((err) => { document.getElementById('submission-result').innerHTML = ''; console.log("HELLO"); console.log(err) });
       }
     </script>
     <!-- Optional JavaScript -->

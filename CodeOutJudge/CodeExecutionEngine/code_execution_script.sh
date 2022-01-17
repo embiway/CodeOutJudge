@@ -10,10 +10,6 @@ then
     exit 1
 fi
 
-
-g++ CodeExecutionEngine/curr_code.cpp -o tmp_exe
-
-
 start=`date +%s.%N`
 ulimit -t $1 -v $2; ./tmp_exe < CodeExecutionEngine/curr_input > tmp_output
 end=`date +%s.%N`
@@ -35,5 +31,3 @@ then
 else
     echo 1 $runtime $2
 fi
-
-rm tmp_exe tmp_output

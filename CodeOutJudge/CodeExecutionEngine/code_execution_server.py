@@ -22,6 +22,17 @@ submission_result = {
     3: "MLE"
 }
 
+def compile_code():
+    compilation = subprocess.Popen([
+        'bash CodeExecutionEngine/code_compilation_script.sh'], shell=True , stderr=subprocess.PIPE)  
+    
+    compilation_error = compilation.stderr.read()
+    if len(compilation_error):
+        return compilation_error
+    
+    return 'Compilation_Successful'
+
+
 def execute_code(time_limit, memory_limit):
     execution = subprocess.Popen([
         f'bash CodeExecutionEngine/code_execution_script.sh {int(time_limit)} {int(memory_limit)}'], shell=True, stdout=subprocess.PIPE)
@@ -40,3 +51,7 @@ def execute_code(time_limit, memory_limit):
 
     return [submission_result[curr_verdict], result[1] , result[2]]
 
+
+def cleanup():
+    cleanup = subprocess.Popen(['rm tmp_exe tmp_output'], shell=True)
+    return True

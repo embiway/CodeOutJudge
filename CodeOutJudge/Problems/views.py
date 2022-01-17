@@ -7,7 +7,6 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError
 from .languages import language_dict, languages
-import judge0api as api
 
 import sys
 import os
@@ -18,13 +17,8 @@ req_path = os.path.join(os.path.dirname(os.path.dirname(
 sys.path.append(req_path)
 
 
-from CodeExecutionEngine.code_execution_server import execute_code
+from CodeExecutionEngine.code_execution_server import execute_code, compile_code, cleanup
 
-# public api key used : Judge0 Api
-url = "https://api.judge0.com/submissions/?base64_encoded=false&wait=false"
-base_url = "https://api.judge0.com/submissions/"
-additional_stuff = "?base64_encoded=false&wait=false"
-fields = "&fields=stdout,stderr,status,time,memory"
 
 # The home page which the user sees
 def index(request):
@@ -175,6 +169,12 @@ def run_code(request, problem_id):
         file.write(code_content)
         file.close()
 
+        compilation_result = compile_code()
+        if compilation_result != 'Compilation_Successful':
+           return render(request, 'problems/compilation_error.html', {
+            'compilation_error': compilation_result,
+        })
+
         test_results = []
 
         max_time = 0
@@ -221,6 +221,7 @@ def run_code(request, problem_id):
 
             status = result[0]
 
+        cleanup()
         code.status = status
         code.time = max_time
         code.memory = max_memory

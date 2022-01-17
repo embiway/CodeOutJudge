@@ -1,4 +1,12 @@
 <table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Result</th>
+            <th scope="col">Status</th>
+            <th scope="col">Time</th>
+            <th scope="col">Memory</th>
+            </tr>
+    </thead>
     <tbody>
         {% for test_result, time_taken, memory_taken, test_case_no in testcases %}
             <tr>
