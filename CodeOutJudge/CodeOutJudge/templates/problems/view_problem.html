@@ -94,21 +94,63 @@
             </div>
             </small>
         
-            <form method="POST" action="{% url 'Problems:run_code'  problem.id %}" enctype="multipart/form-data">
-            {% csrf_token %}
+            <form enctype="multipart/form-data">
                 <label for="code">
-                    <input type="file" accept="text/html" name="code">
+                    <input type="file" accept="text/html" name="code" id="code-file">
                 </label>
 
-                <select name="language_selection">
-                    {% for language in languages %}
-                        <option value="{{ language }}">{{ language }}</option>
-                    {% endfor %}
-                </select>
-                <input type="submit" value="Run" class="btn btn-primary">
+                <input type="button" onClick='compileAndRun(this.form); return false;' value="Compile and Run" class="btn btn-primary">
             </form>
         </div>
+
+        <div id="submission-result"></div>
     </div>
+
+    <script>
+
+      const problem_id = {{ problem.id }};
+      compileAndRun = (submission) => {
+        const codeFile = document.getElementById('code-file').files;
+        if(codeFile[0] === undefined) {
+          console.log('Kindly enter a file');
+          return;
+        }
+
+        console.log(typeof(codeFile));
+
+        var data = new FormData()
+        data.append('code', codeFile[0])
+
+        let csrftoken = getCookie('csrftoken');
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        fetch('http://127.0.0.1:8000/' + problem_id + '/run/', {
+          method: 'POST',
+          body: data,
+          headers: {
+                "X-CSRFToken": csrftoken },
+          mode: "same-origin",
+        }).then((response) => { console.log(response); return response.text() })
+        .then((data) => {
+          console.log("HERE");
+          document.getElementById('submission-result').innerHTML = data;
+        })
+        .catch((err) => { console.log("HELLO"); console.log(err) });
+      }
+    </script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -116,46 +158,3 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   </body>
 </html>
-
-<!-- <body>
-    <div class="problem_name">
-        <h3>{{ problem.problem_name }}</h3>
-    </div>
-    <div class="problem_statement">
-        <p>{{ problem.problem_statement }}</p>
-    </div>
-
-    <div class="input_info">
-        <p>Input : {{ input_info }}</p>
-    </div>
-
-    <div class="output_info">
-        <p>Output : {{ output_info }}</p>
-    </div>
-
-    <div class="sample_input">
-        <p>Sample Input : {{ sample_input }}</p>
-    </div>
-
-    <div class="sample_output">
-        <p>Sample Output : {{ sample_output }}</p>
-    </div>
-
-
-    <div class="time_limit">
-        <p>Time Limit : {{ time_limit }}</p>
-    </div>
-
-    <div class="memory_limit">
-        <p>Memory Limit : {{ memory_limit }}</p>
-    </div>
-
-    <form method="POST" action="{% url 'Problems:run_code'  problem.id %}" enctype="multipart/form-data">
-    {% csrf_token %}
-        <label for="code">
-            <input type="file" accept="text/html" name="code">
-        </label>
-        <input type="submit" value="Run">
-    </form>
-</body>
-</html> -->

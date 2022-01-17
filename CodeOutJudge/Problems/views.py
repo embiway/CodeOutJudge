@@ -7,12 +7,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError
 from .languages import language_dict, languages
-from celery import shared_task
 import judge0api as api
-import subprocess
-
-import requests
-import json
 
 import sys
 import os
@@ -172,74 +167,71 @@ def run_code(request, problem_id):
         # Copy Code to the Code Execution Engine
         file_content = open(code.submission.path, 'r')
         code_content = file_content.read()
+
+        print(f'code content : {code_content}')
         file_content.close()
 
         file = open(os.path.join(req_path, 'curr_code.cpp'), 'w')
         file.write(code_content)
         file.close()
 
-        # Copy sample input and output to the execution engine.
-        sample_input = problem.inputfile_set.last()
-        sample_output = sample_input.output_file
+        test_results = []
 
-        file = open(sample_input.file_content.path, 'r')
-        input_text = file.read()
-        file.close()
+        max_time = 0
+        max_memory = 0
+        status = "AC"
+        test_case_no = 1
 
-        file = open(os.path.join(req_path, 'curr_input'), 'w')
-        file.write(input_text)
-        file.close()
+        for input in problem.inputfile_set.all():
+            # Copy input and output to the execution engine.
+            output = input.output_file
 
-        file = open(sample_output.file_content.path, 'r')
-        output_text = file.read()
-        file.close()
+            file = open(input.file_content.path, 'r')
+            input_text = file.read()
+            file.close()
 
-        file = open(os.path.join(req_path, 'curr_expected_output'), 'w')
-        file.write(output_text)
-        file.close()
+            file = open(os.path.join(req_path, 'curr_input'), 'w')
+            file.write(input_text)
+            file.close()
 
-        # return HttpResponse(str(execute_code(1, 25600)))
+            file = open(output.file_content.path, 'r')
+            output_text = file.read()
+            file.close()
 
-    #     # data for the api , refer to language.py for languages and their ids
-    #     data = {
-    #         "source_code": code_content,
-    #         "language_id": language_dict[language_id],
-    #         "stdin": input_text
-    #     }
-    #     response = requests.post(url, data)
+            file = open(os.path.join(req_path, 'curr_expected_output'), 'w')
+            file.write(output_text)
+            file.close()
 
-    #     # Two requests are made : First one (with success code 201) is for running the code
-    #     # Second one is to get the result
-    #     if response.status_code == 201:
-    #         response_json = response.json()
-    #         verdict = requests.get(
-    #             base_url + response_json["token"] + additional_stuff + fields)
+            result = execute_code(1 , 256000)
+            if type(result) == str:
+                raise Http404(result)
 
-    #         if verdict.status_code == 200:
-    #             verdict_response = verdict.json()
+            result.append(test_case_no)
+            test_case_no += 1
+            test_results.append(result)
 
-    #             while verdict_response["status"]["description"] == "Processing" or verdict_response["status"]["description"] == "In Queue":
-    #                 verdict = requests.get(
-    #                     base_url + response_json["token"] + additional_stuff + fields)
-    #                 verdict_response = verdict.json()
+            max_time = max(max_time , float(result[1]))
+            max_memory = max(max_memory , int(result[2]))
 
-        result = execute_code(1 , 256000)
-        if type(result) == str:
-            raise Http404(result)
+            if result[0] == "AC":
+                continue
 
-        code.status = result[0]
-        code.time = result[1]
-        code.memory = result[2]
+            if status == "WA":
+                continue
+
+            status = result[0]
+
+        code.status = status
+        code.time = max_time
+        code.memory = max_memory
 
         code.save()
 
         if code.status == "AC":
             profile.problem_set.add(problem)
 
-        codes = Submission.objects.filter(
-            user=profile, problem=problem).order_by('-creation_time')
-        return render(request, 'problems/Result.html', {
-            'codes': codes,
+        return render(request, 'problems/single_submission.html', {
+            'testcases': test_results,
         })
     #         else:
     #             return HttpResponse("sorry the code couldn't be processed")
@@ -257,3 +249,29 @@ def run_code(request, problem_id):
     - Refactor Code
     - Re write UI in React.
 '''
+
+
+  # return HttpResponse(str(execute_code(1, 25600)))
+
+        #     # data for the api , refer to language.py for languages and their ids
+        #     data = {
+        #         "source_code": code_content,
+        #         "language_id": language_dict[language_id],
+        #         "stdin": input_text
+        #     }
+        #     response = requests.post(url, data)
+
+        #     # Two requests are made : First one (with success code 201) is for running the code
+        #     # Second one is to get the result
+        #     if response.status_code == 201:
+        #         response_json = response.json()
+        #         verdict = requests.get(
+        #             base_url + response_json["token"] + additional_stuff + fields)
+
+        #         if verdict.status_code == 200:
+        #             verdict_response = verdict.json()
+
+        #             while verdict_response["status"]["description"] == "Processing" or verdict_response["status"]["description"] == "In Queue":
+        #                 verdict = requests.get(
+        #                     base_url + response_json["token"] + additional_stuff + fields)
+        #                 verdict_response = verdict.json()

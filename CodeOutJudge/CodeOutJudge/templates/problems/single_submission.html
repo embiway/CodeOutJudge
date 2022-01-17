@@ -1,0 +1,23 @@
+<table class="table table-hover">
+    <tbody>
+        {% for test_result, time_taken, memory_taken, test_case_no in testcases %}
+            <tr>
+                <td>
+                <p> TestCase {{ test_case_no }} : </p>
+                {% if test_result == "Accepted" %}
+                    <td style="color: green;"><strong>{{ test_result }}</strong></td>
+                {% endif %}
+                {% if test_result == "Wrong Answer" %}
+                    <td style="color: red;"><strong>{{ test_result }}</strong></td>
+                {% endif %}
+                {% if test_result != "Accepted" and test_result != "Wrong Answer" %}
+                    <td style="color: orange;"><strong>{{ test_result }}</strong></td>
+                {% endif %}
+                
+                </td>
+                <td>{{ time_taken }}</td>
+                <td>{{ memory_taken }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

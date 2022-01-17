@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'Problems.apps.ProblemsConfig',
     'CodeOutJudge',
     'Profiles.apps.ProfilesConfig',
-    'channels',
 ]
 
 MIDDLEWARE = [
@@ -71,8 +70,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'CodeOutJudge.wsgi.application'
-ASGI_APPLICATION = "CodeOutJudge.asgi.application"
+WSGI_APPLICATION = 'CodeOutJudge.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -130,11 +128,3 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-
-# CELERY STUFF
-BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'India/Kolkata'
