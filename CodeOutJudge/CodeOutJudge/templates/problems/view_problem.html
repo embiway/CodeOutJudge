@@ -1,67 +1,11 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'basic_templates/navbar.html' %}
+{% load static %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-    
+{% block content %}
+
     {% load static %}
     <link rel="stylesheet" href="{% static 'problems_styles/view_problem.css' %}">
     <title>CodeOut</title>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'Problems:index' %}"
-          ><img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcT7dd0u49G6FuV_-tBcJu6vVQE4YR_6j998-aqHaJFDe2am0rah&usqp=CAU"
-            width="30"
-            height="30"
-            class="d-inline-block align-top"
-            alt=""
-            loading="lazy"
-          />CodeOut</a
-        >
-  
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-  
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="{% url 'Problems:problems' %}"
-                >Problems<span class="sr-only">(current)</span></a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'Profiles:blog_form' %}">Create Blog</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/admin">Admin Area</a>
-            </li>
-           
-          </ul>
-          <form class="form-inline my-2 my-lg-0" method="POST" action="{% url 'Profiles:find_profile' %}">
-            {% csrf_token %}
-            <input
-              class="form-control mr-sm-2"
-              type="search"
-              placeholder="Search any user"
-              aria-label="Search"
-              name="search"
-            />
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-              Search
-            </button>
-          </form>
-          <a href="{% url 'Problems:logout' %}" class="btn btn-outline-success my-2 my-sm-0">Log Out</a>
-        </div>
-    
-    </nav>
-
     <div class="container">
         <div class="centre-div">
             <div class="problem_name">
@@ -108,18 +52,18 @@
 
     <script>
 
-      const problem_id = {{ problem.id }};
-      compileAndRun = (submission) => {
+        const problem_id = {{ problem.id }};
+        compileAndRun = (submission) => {
         const codeFile = document.getElementById('code-file').files;
         
         if(codeFile[0] === undefined) {
-          console.log('Kindly enter a file');
-          return;
+            console.log('Kindly enter a file');
+            return;
         }
 
         if(codeFile[0].type != 'text/x-c++src') {
-          document.getElementById('submission-result').innerHTML = 'Submit a valid C++ file';
-          return;
+            document.getElementById('submission-result').innerHTML = 'Submit a valid C++ file';
+            return;
         }
 
         document.getElementById('submission-result').innerHTML = 'RUNNING CODE!!!!!!!!!!!';
@@ -146,23 +90,17 @@
             return cookieValue;
         }
         fetch('http://127.0.0.1:8000/' + problem_id + '/run/', {
-          method: 'POST',
-          body: data,
-          headers: {
+            method: 'POST',
+            body: data,
+            headers: {
                 "X-CSRFToken": csrftoken },
-          mode: "same-origin",
+            mode: "same-origin",
         }).then((response) => { console.log(response); return response.text() })
         .then((data) => {
-          console.log("HERE");
-          document.getElementById('submission-result').innerHTML = data;
+            console.log("HERE");
+            document.getElementById('submission-result').innerHTML = data;
         })
         .catch((err) => { document.getElementById('submission-result').innerHTML = ''; console.log("HELLO"); console.log(err) });
-      }
-    </script>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-  </body>
-</html>
+    }
+  </script>
+{% endblock %}

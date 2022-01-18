@@ -19,7 +19,6 @@ runtime=$( echo "$end - $start" | bc -l )
 if [[ ! (-s tmp_output) ]]
 then
     echo 3 $1 $2
-    rm tmp_exe tmp_output
     exit 1
 fi
 

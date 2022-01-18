@@ -12,16 +12,17 @@
             <tr>
                 <td>
                 <p> TestCase {{ test_case_no }} : </p>
-                {% if test_result == "Accepted" %}
+                {% if test_result == "Accepted" or test_result == "AC" %}
                     <td style="color: green;"><strong>{{ test_result }}</strong></td>
-                {% endif %}
-                {% if test_result == "Wrong Answer" %}
+                {% elif test_result == "Wrong Answer" or test_result == "WA" %}
                     <td style="color: red;"><strong>{{ test_result }}</strong></td>
-                {% endif %}
-                {% if test_result != "Accepted" and test_result != "Wrong Answer" %}
+                {% elif test_result == "Time Limit Exceeded" or test_result == "TLE" %}
                     <td style="color: orange;"><strong>{{ test_result }}</strong></td>
+                {% elif test_result == "Memory Limit Exceeded" or test_result == "MLE" %}
+                    <td style="color: blue;"><strong>{{ test_result }}</strong></td>
+                {% else %}
+                    <td style="color: grey;"><strong>Skipped</strong></td>
                 {% endif %}
-                
                 </td>
                 <td>{{ time_taken }}</td>
                 <td>{{ memory_taken }}</td>

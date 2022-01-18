@@ -97,23 +97,17 @@ def log_out(request):
     return redirect('/')
 
 
-def like_incrementer(request, blog_id, blog_location):
+def like_incrementer(request, blog_id):
     blog = Blogs.objects.get(id=blog_id)
     try:
         profile = Profile.objects.get(user=request.user)
         user = blog.likes.get(profile)
-        if blog_location == "index":
-            return redirect('/')
-        else:
-            return redirect('/profiles/' + str(blog_id) + '/display_blog')
+        return HttpResponse("You have already liked this block")
     except:
         blog.likes.add(profile)
         blog.like_count = blog.likes.count()
         blog.save()
-        if blog_location == "index":
-            return redirect('/')
-        else:
-            return redirect('/profiles/' + str(blog_id) + '/display_blog')
+        return HttpResponse(blog.like_count)
 
 
 def list_problems(request):
@@ -122,11 +116,12 @@ def list_problems(request):
     attempted_problems = profile.problem_set.all()
 
     # attempted problems : problems for which the user has some submission
-    context = {'problems': problems, 'attempted_problems': attempted_problems}
+    context = {'problems': problems, 'attempted_problems': attempted_problems , 'profile' : profile}
     return render(request, 'problems/problem_list.html', context)
 
 
 def view_problem(request, problem_id):
+    profile = Profile.objects.get(user = request.user)
     try:
         problem = Problem.objects.get(id=problem_id)
         sample_input = problem.inputfile_set.first()
@@ -143,7 +138,8 @@ def view_problem(request, problem_id):
         context = {'problem': problem,
                    'sample_input': sample_input_text,
                    'sample_output': sample_output_text,
-                   'languages': languages, }
+                   'languages': languages,
+                   'profile' : profile }
         return render(request, 'problems/view_problem.html', context)
     except:
         raise Http404('Problem Not Found')
@@ -233,6 +229,7 @@ def run_code(request, problem_id):
 
         return render(request, 'problems/single_submission.html', {
             'testcases': test_results,
+            'profile' : profile,
         })
     #         else:
     #             return HttpResponse("sorry the code couldn't be processed")

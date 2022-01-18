@@ -15,6 +15,7 @@ def view_profile(request , profile_id):
         return render(request , 'profiles/display_profile.html' , {
             'profile' : profile,
             'problem_count' : problem_count,
+            'profile': profile,
         })
 
     except:
@@ -44,6 +45,7 @@ def submissions_display(request , profile_id):
 
     return render(request , 'problems/submissions.html' , {
         'codes' : submissions,
+        'profile' : profile,
     })
 
 
@@ -53,10 +55,12 @@ def user_blogs_list(request , profile_id):
 
     return render(request , 'profiles/blog_list.html' , {
         'blogs' : blogs,
+        'profile' : profile,
     })
 
 def display_blog(request , blog_id):
     try:
+        profile = Profile.objects.get(user = request.user)
         blog = Blogs.objects.get(id = blog_id)
         comments = blog.comments_set.all().order_by('-created_time')
         comment = CommentForm()
@@ -65,6 +69,7 @@ def display_blog(request , blog_id):
             'blog' : blog,
             'comments' : comments,
             'form' : comment,
+            'profile' : profile,
         })
     except:
         raise Http404('Something went Wrong!!!!')
@@ -78,19 +83,23 @@ def user_problem(request , profile_id):
         return render(request, 'profiles/user_solved_problems.html' , {
             'problems' : problems,
             'attempted_problems' : attempted_problems,
+            'profile' : profile,
         })
     except:
         raise Http404('Something Went Wrong')
 
 
 def blog_form_render(request):
+    profile = Profile.objects.get(user = request.user)
     form = BlogForm()
     return render(request , 'profiles/blog_form.html' , {
         'form' : form,
+        'profile': profile
     })
 
 
 def get_blog(request):
+    profile = Profile.objects.get(user = request.user)
     if request.method == 'POST':    
         blog_form = BlogForm(request.POST)
 
@@ -105,7 +114,9 @@ def get_blog(request):
     else:
         blog = BlogForm()
     
-    return render(request , 'profiles/blog_form.html')
+    return render(request , 'profiles/blog_form.html' , {
+        'profile' : profile
+    })
 
 
 def add_comment(request , blog_id):
